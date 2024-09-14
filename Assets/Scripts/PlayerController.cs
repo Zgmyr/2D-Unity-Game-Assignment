@@ -1,6 +1,6 @@
 // Author: Zachary Gmyr
 // 9/14/2024
-// This script controls player movement as well as win & lose conditions
+// This script controls player movement as well as win & lose conditions and a 3 point health system
 
 
 using System;
@@ -21,12 +21,17 @@ public class PlayerController : MonoBehaviour
     public Text loseText;
     public Button restartButton;
 
+    private int health;
+    public Image[] hearts;
+
 
     // Start is called before the first frame update
     void Start()
     {
         rb2d = GetComponent<Rigidbody2D>();
         timer = 60; // timer starts at 1 minute & counts down
+
+        health = 3; // start with 3 health
 
         // Hide win/lose text & restart button
         winText.text = "";
@@ -50,7 +55,7 @@ public class PlayerController : MonoBehaviour
     {
         // WIN CONDITION
         // update the timer countdown (if we haven't already lost)
-        if (timer > 0 && string.IsNullOrEmpty(loseText.text))
+        if (timer > 0 && health > 0)
         {
             timer -= Time.deltaTime; // decrease timer
             if (timer < 0)
@@ -62,6 +67,17 @@ public class PlayerController : MonoBehaviour
         {
             winText.text = "YOU WIN!";
             restartButton.gameObject.SetActive(true);
+        }
+
+        // Health System - start with 3 hearts & each time hit these decrease
+        // Source: https://www.youtube.com/watch?v=3uyolYVsiWc (learned how to use arrays of Images)
+        for (int i = 0; i < hearts.Length; i++) {
+            if (i < health) {
+                hearts[i].enabled = true;
+            }
+            else {
+                hearts[i].enabled = false;
+            }
         }
     }
 
@@ -85,8 +101,18 @@ public class PlayerController : MonoBehaviour
         // if we collide with a pickup item (and haven't already won yet)
         if (other.gameObject.CompareTag("Pickup") && string.IsNullOrEmpty(winText.text))
         {
-            loseText.text = "YOU LOSE!";
-            restartButton.gameObject.SetActive(true);
+            if (health > 0) {
+                // decrease health by one
+                health -= 1;
+
+                // check if no health left
+                if (health == 0)
+                {
+                    // LOSE CONDITION
+                    loseText.text = "YOU LOSE!";
+                    restartButton.gameObject.SetActive(true);
+                }
+            }
         }
     } 
 

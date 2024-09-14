@@ -54,7 +54,7 @@ public class Rotator : MonoBehaviour
             // parameters: 'inDirection' (current direction vector) and 'inNormal' (normal vector, perpendicular at point of collision)
             // Note: other.contacts is an array of contact points between the colliders involved in collision, and
             //      contacts[0] specifies the first contact point
-            // Source: https://docs.unity3d.com/ScriptReference/Vector2.Reflect.html
+            // Source: https://docs.unity3d.com/ScriptReference/Vector2.Reflect.html (learned how to reflect vectors across a normal vector)
             direction = Vector2.Reflect(direction, other.contacts[0].normal);
         }
     }
